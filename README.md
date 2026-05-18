@@ -81,7 +81,7 @@ The culminating point of the architecture is the interactive Web Dashboard. Usin
 | Backend | Python 3.10+ | Core logic and processing |
 | Web Server | Flask | HTTP API and SSE streaming |
 | Telemetry | psutil | System metrics collection |
-| AI Provider | Anthropic Claude (`claude-sonnet-4-20250514`) | Language model analysis |
+| AI Provider | Anthropic Claude (`claude-sonnet-4-6`) | Language model analysis |
 | Frontend | Vanilla JS | Dashboard interface |
 | Styling | CSS (Apple Design) | Modern UI |
 | PDF | ReportLab | Report generation |
@@ -139,7 +139,7 @@ Scry supports Claude models:
 
 | Model | Model ID | Cost | Best For |
 |-------|----------|------|----------|
-| Claude Sonnet | `claude-sonnet-4-20250514` | $3/M input, $15/M output | **Recommended** - Fast, balanced |
+| Claude Sonnet | `claude-sonnet-4-6` | $3/M input, $15/M output | **Recommended** - Fast, balanced |
 | Claude Opus | `claude-opus-4-20250514` | $15/M input, $75/M output | Best reasoning, higher cost |
 
 ### Step 5: Configure Environment
@@ -151,13 +151,13 @@ Create a `.env` file in the project root with your Anthropic configuration:
 ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 
 # Model selection (Sonnet is recommended)
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-4-6
 ```
 
 Example:
 ```bash
 ANTHROPIC_API_KEY=sk-ant-api03-bsJI6bbC1nzPJMkCPKuo...
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-4-6
 ```
 
 **How the App Uses These Variables:**
