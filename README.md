@@ -6,7 +6,7 @@ Most security tools overwhelm you with raw data and leave the analysis to you. T
 
 The platform uses four AI agents that work together: one extracts meaningful observations from raw telemetry, another maps those observations to potential threats, a third generates defensive scenarios based on real findings, and the fourth creates a final executive summary. Each agent builds on the last, creating a complete picture from scattered metrics.
 
-Threats are automatically mapped to the MITRE ATT&CK framework, so you see not just what's abnormal, but how it fits into known attack patterns. Reports export to PDF for documentation or sharing. The entire analysis pipeline is visible - you see every command run, every AI decision made, every finding surfaced.
+Threats are automatically mapped to the MITRE ATT&CK framework, so you see not just what's abnormal, but how it fits into known attack patterns. The entire analysis pipeline is visible - you see every command run, every AI decision made, every finding surfaced.
 
 ---
 
@@ -23,10 +23,6 @@ Threats don't exist in a vacuum - Scry automatically maps detected patterns to t
 
 **Transparent Analysis Pipeline:**
 Every AI decision is visible. Watch your telemetry flow through each agent, see the exact prompts sent to the AI, observe the reasoning as it happens. When Scry flags a concern, you can trace exactly why - back to the specific metric, the specific pattern, the specific technique that triggered it.
-
-**Professional PDF Reports:**
-Generate comprehensive security reports with one click. Include system snapshots, threat analysis, MITRE ATT&CK mappings, and recommended detection rules. Perfect for compliance documentation, incident response records, or sharing findings with your security team.
-*View a sample report here: [Sample Analysis Report](docs/analysis_report.md)*
 
 **Live Streaming Dashboard:**
 Watch analysis unfold in real-time. Telemetry collection appears command-by-command. AI agents share their thinking as they analyze. Visualizations update as patterns emerge. You don't wait for results - you watch them being created.
@@ -81,10 +77,9 @@ The culminating point of the architecture is the interactive Web Dashboard. Usin
 | Backend | Python 3.10+ | Core logic and processing |
 | Web Server | Flask | HTTP API and SSE streaming |
 | Telemetry | psutil | System metrics collection |
-| AI Provider | Anthropic Claude (`claude-sonnet-4-20250514`) | Language model analysis |
+| AI Provider | Anthropic Claude (`claude-sonnet-4-6`) | Language model analysis |
 | Frontend | Vanilla JS | Dashboard interface |
 | Styling | CSS (Apple Design) | Modern UI |
-| PDF | ReportLab | Report generation |
 
 ---
 
@@ -139,7 +134,7 @@ Scry supports Claude models:
 
 | Model | Model ID | Cost | Best For |
 |-------|----------|------|----------|
-| Claude Sonnet | `claude-sonnet-4-20250514` | $3/M input, $15/M output | **Recommended** - Fast, balanced |
+| Claude Sonnet | `claude-sonnet-4-6` | $3/M input, $15/M output | **Recommended** - Fast, balanced |
 | Claude Opus | `claude-opus-4-20250514` | $15/M input, $75/M output | Best reasoning, higher cost |
 
 ### Step 5: Configure Environment
@@ -151,13 +146,13 @@ Create a `.env` file in the project root with your Anthropic configuration:
 ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 
 # Model selection (Sonnet is recommended)
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-4-6
 ```
 
 Example:
 ```bash
 ANTHROPIC_API_KEY=sk-ant-api03-bsJI6bbC1nzPJMkCPKuo...
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-4-6
 ```
 
 **How the App Uses These Variables:**
@@ -177,7 +172,6 @@ Navigate to http://127.0.0.1:5000
 2. Watch telemetry collection in the **Command Log** tab
 3. Switch to **Visualizations** to see live charts
 4. Switch to **Agent Outputs** to see full Claude analysis
-5. Download PDF report when complete
 
 ---
 

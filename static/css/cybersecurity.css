@@ -159,22 +159,6 @@ body {
     cursor: not-allowed;
 }
 
-.btn-download {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--accent-secondary);
-}
-
-.btn-download:hover:not(:disabled) {
-    background: rgba(0, 212, 255, 0.1);
-    box-shadow: var(--glow-cyan);
-}
-
-.btn-download:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
 /* Main Content */
 .main-content {
     display: flex;

@@ -1,7 +1,6 @@
 class GroundTraceDashboard {
     constructor() {
         this.executeBtn = document.getElementById('executeBtn');
-        this.downloadPdfBtn = document.getElementById('downloadPdfBtn');
         this.statusIndicator = document.getElementById('statusIndicator');
         this.statusDot = this.statusIndicator.querySelector('.status-dot');
         this.statusText = document.getElementById('statusText');
@@ -47,7 +46,6 @@ class GroundTraceDashboard {
     
     init() {
         this.executeBtn.addEventListener('click', () => this.executeAnalysis());
-        this.downloadPdfBtn.addEventListener('click', () => this.downloadPdf());
         
         document.querySelectorAll('.toggle-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.switchView(e.target.dataset.view));
@@ -169,7 +167,6 @@ class GroundTraceDashboard {
         this.setSystemStatus('complete', 'Complete');
         this.updateProgress('agent3', 'complete', 'Done');
         this.updateAgentBadge('agent3', 'complete', 'Complete');
-        this.downloadPdfBtn.disabled = false;
         this.showToast('Analysis complete!', 'success');
     }
     
@@ -193,8 +190,6 @@ class GroundTraceDashboard {
             this.progressItems[key].classList.remove('active', 'complete', 'error');
             this.progressStatuses[key].textContent = 'Pending';
         });
-        
-        this.downloadPdfBtn.disabled = true;
         
         document.getElementById('hostInfo').textContent = '-';
         document.getElementById('osInfo').textContent = '-';
@@ -294,7 +289,6 @@ class GroundTraceDashboard {
                 this.addContentToAgent('agent3', this.formatMarkdown(data.agent3));
                 this.updateAgentBadge('agent3', 'complete', 'Complete');
                 this.updateProgress('agent3', 'complete', 'Done');
-                this.downloadPdfBtn.disabled = false;
                 this.setSystemStatus('complete', 'Ready');
             }
             
@@ -348,11 +342,6 @@ class GroundTraceDashboard {
         html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
         
         return html;
-    }
-    
-    async downloadPdf() {
-        window.location.href = '/api/download/pdf';
-        this.showToast('PDF download started', 'info');
     }
     
     showToast(message, type = 'info') {

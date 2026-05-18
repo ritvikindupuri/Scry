@@ -44,7 +44,6 @@ def create_diagram():
         ("Agent\nChain", light, secondary),
         ("DeepSeek\nLLM", light, secondary),
         ("Dashboard", light, secondary),
-        ("PDF\nReport", light, primary),
     ]
     
     # Draw pipeline boxes
@@ -77,7 +76,7 @@ def create_diagram():
             ], fill=gray)
     
     # Labels under boxes
-    labels = ["OS", "Python", "Data", "AI", "Analysis", "UI", "Output"]
+    labels = ["OS", "Python", "Data", "AI", "Analysis", "UI"]
     for i, label in enumerate(labels):
         draw.text((start_x + i * (box_w + gap) + box_w//2, start_y + box_h + 15), label, font=arrow_font, fill=gray, anchor='mt')
     
@@ -136,18 +135,6 @@ def create_diagram():
     draw.line([(mid_x3, start_y + box_h), (mid_x3, detail_y3)], fill=gray, width=1)
     draw.polygon([(mid_x3, detail_y3), (mid_x3 - 5, detail_y3 + 8), (mid_x3 + 5, detail_y3 + 8)], fill=gray)
     
-    # Layer 4 details
-    layer4_x = 80
-    detail_y4 = 490
-    draw.text((layer4_x, detail_y4), "Layer 4: Output", font=header_font, fill=text)
-    
-    details4 = ["ReportLab", "System Overview", "Agent Analysis", "PDF"]
-    dx = layer4_x
-    for d in details4:
-        draw.rectangle([dx, detail_y4 + 15, dx + detail_w + 15, detail_y4 + 40], fill=light, outline=gray, width=1)
-        draw.text((dx + (detail_w + 15)//2, detail_y4 + 28), d, font=arrow_font, fill=gray, anchor='mt')
-        dx += detail_w + 20
-    
     # Flow number indicators on arrows
     flow_positions = [
         (start_x + box_w + 15, start_y + box_h//2 - 20, "1"),
@@ -155,7 +142,6 @@ def create_diagram():
         (start_x + 3*(box_w + gap) + 10, start_y + box_h//2 - 20, "3"),
         (start_x + 4*(box_w + gap) + 15, start_y + box_h//2 - 20, "4"),
         (start_x + 5*(box_w + gap) + 15, start_y + box_h//2 - 20, "5"),
-        (start_x + 6*(box_w + gap) - 30, start_y + box_h//2 - 20, "6"),
     ]
     
     for fx, fy, num in flow_positions:
