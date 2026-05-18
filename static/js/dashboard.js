@@ -6,7 +6,6 @@
 class GroundTraceDashboard {
     constructor() {
         this.executeBtn = document.getElementById('executeBtn');
-        this.downloadBtn = document.getElementById('downloadBtn');
         this.statusValue = document.getElementById('statusValue');
         this.phaseValue = document.getElementById('phaseValue');
         this.modelValue = document.getElementById('modelValue');
@@ -28,7 +27,6 @@ class GroundTraceDashboard {
     
     init() {
         this.executeBtn.addEventListener('click', () => this.execute());
-        this.downloadBtn.addEventListener('click', () => this.download());
         
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
@@ -187,13 +185,12 @@ class GroundTraceDashboard {
         this.setRunning(false);
         this.statusValue.textContent = 'COMPLETE';
         this.phaseValue.textContent = 'DONE';
-        this.downloadBtn.disabled = false;
         
         this.addTerminalLine('success', '\n========================================');
         this.addTerminalLine('success', 'ANALYSIS COMPLETE');
         this.addTerminalLine('success', '========================================');
         
-        this.showToast('Analysis complete! Download PDF report.', 'success');
+        this.showToast('Analysis complete!', 'success');
     }
     
     handleError(data) {
@@ -324,7 +321,6 @@ class GroundTraceDashboard {
         });
         
         this.modelValue.textContent = '-';
-        this.downloadBtn.disabled = true;
     }
     
     setRunning(running) {
@@ -332,11 +328,6 @@ class GroundTraceDashboard {
         this.executeBtn.disabled = running;
         this.statusValue.textContent = running ? 'RUNNING' : 'READY';
         this.phaseValue.textContent = running ? 'STARTING' : 'IDLE';
-    }
-    
-    async download() {
-        window.location.href = '/api/download/pdf';
-        this.showToast('PDF report download started', 'info');
     }
     
     showToast(message, type = 'info') {

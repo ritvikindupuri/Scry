@@ -5,7 +5,6 @@
 class CipherDashboard {
     constructor() {
         this.executeBtn = document.getElementById('executeBtn');
-        this.downloadBtn = document.getElementById('downloadBtn');
         this.commandLog = document.getElementById('commandLog');
         this.isRunning = false;
         this.eventSource = null;
@@ -64,7 +63,6 @@ class CipherDashboard {
 
     init() {
         this.executeBtn.addEventListener('click', () => this.execute());
-        this.downloadBtn.addEventListener('click', () => this.download());
 
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
@@ -905,7 +903,6 @@ if (html) {
         this.eventSource.close();
         this.setRunning(false);
         this.setStatus('complete', 'Complete');
-        this.downloadBtn.disabled = false;
         
         this.logHeader('ANALYSIS COMPLETE', 'success');
         this.log('success', 'System', 'Security analysis finished. Review agent outputs and visualizations.');
@@ -996,33 +993,8 @@ if (html) {
         document.getElementById('threatList').innerHTML = '<div style="color: #666; font-size: 12px;">Awaiting threat analysis...</div>';
         document.getElementById('scenarioTable').innerHTML = '<tr><td colspan="2" style="color: #666;">Awaiting scenario generation...</td></tr>';
 
-        this.downloadBtn.disabled = true;
         this.agentOutputs = { agent1: '', agent2: '', agent3: '' };
         this.updateFullOutputDisplay();
-    }
-
-    download() {
-        fetch('/api/download/pdf')
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw new Error(err.error || 'Download failed'); });
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Scry_report_${new Date().toISOString().slice(0,19).replace(/[-T:]/g,'_')}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                a.remove();
-                this.showToast('Report downloaded successfully');
-            })
-            .catch(err => {
-                this.showToast(err.message, 'error');
-            });
     }
 
     showToast(message, type = 'info') {
