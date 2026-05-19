@@ -11,13 +11,6 @@ import queue
 import time
 from datetime import datetime
 from pathlib import Path
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether
-from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
-import io
 
 app = Flask(__name__)
 CORS(app)
@@ -237,100 +230,6 @@ def get_agents():
         "agent2": SESSION_DATA["agent_outputs"].get("agent2", ""),
         "agent3": SESSION_DATA["agent_outputs"].get("agent3", "")
     })
-
-
-@app.route("/api/report")
-def get_report():
-    return jsonify({
-        "telemetry": SESSION_DATA.get("telemetry"),
-        "command_logs": SESSION_DATA.get("command_logs", []),
-        "agent_outputs": SESSION_DATA["agent_outputs"],
-        "model": SESSION_DATA.get("model")
-    })
-
-
-@app.route("/api/download/pdf")
-def download_pdf():
-    if not SESSION_DATA.get("telemetry"):
-        return jsonify({"error": "No report available"}), 400
-    
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=50, leftMargin=50, topMargin=50, bottomMargin=50)
-    styles = getSampleStyleSheet()
-    story = []
-    
-    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=24, alignment=TA_CENTER, 
-                                  textColor=colors.HexColor('#00ff88'), spaceAfter=20)
-    subtitle_style = ParagraphStyle('Subtitle', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER,
-                                     textColor=colors.HexColor('#888888'), spaceAfter=30)
-    heading_style = ParagraphStyle('Heading', parent=styles['Heading2'], fontSize=14, 
-                                    textColor=colors.HexColor('#00ff88'), spaceBefore=20, spaceAfter=10)
-    subheading_style = ParagraphStyle('SubHeading', parent=styles['Heading3'], fontSize=12,
-                                      textColor=colors.HexColor('#00ccff'), spaceBefore=15, spaceAfter=8)
-    body_style = ParagraphStyle('Body', parent=styles['Normal'], fontSize=9, leading=12)
-    code_style = ParagraphStyle('Code', parent=styles['Code'], fontSize=8, leading=10,
-                                fontName='Courier', backColor=colors.HexColor('#1a1a2e'))
-    
-    story.append(Paragraph("Scry Security Analysis Report", title_style))
-    story.append(Paragraph(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Model: {SESSION_DATA.get('model', 'N/A')}", subtitle_style))
-    
-    tel = SESSION_DATA.get("telemetry", {})
-    host = tel.get("host", {})
-    
-    story.append(Paragraph("System Overview", heading_style))
-    host_data = [
-        ["Property", "Value"],
-        ["Hostname", host.get("node", "Unknown")],
-        ["Operating System", f"{host.get('system', '')} {host.get('release', '')}"],
-        ["Architecture", host.get("machine", "Unknown")],
-        ["Boot Time", tel.get("boot_time_utc", "Unknown")],
-        ["CPU Cores", str(tel.get("cpu", {}).get("logical_cpus", "Unknown"))],
-    ]
-    
-    t = Table(host_data, colWidths=[2*inch, 4*inch])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#00ff88')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 9),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#333333')),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#0d1117')),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#0d1117'), colors.HexColor('#161b22')]),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-    ]))
-    story.append(t)
-    story.append(Spacer(1, 20))
-    
-    story.append(Paragraph("Telemetry Collection Commands", heading_style))
-    for cmd in SESSION_DATA.get("command_logs", [])[:15]:
-        cmd_text = f"<b>[{cmd.get('category', 'N/A')}]</b> {cmd.get('description', '')}"
-        status_color = '#00ff88' if cmd.get('status') == 'success' else '#ff4444'
-        story.append(Paragraph(f"<font color='{status_color}'>{cmd.get('status', '').upper()}</font> | {cmd_text}", body_style))
-        story.append(Paragraph(f"<font color='#888888'>{cmd.get('command', '')}</font>", code_style))
-        if cmd.get('output'):
-            story.append(Paragraph(f"<font color='#00ccff'>Output:</font> {cmd.get('output', '')[:200]}...", code_style))
-        story.append(Spacer(1, 5))
-    
-    story.append(PageBreak())
-    
-    story.append(Paragraph("Agent 1: Telemetry Analysis", heading_style))
-    story.append(Paragraph(SESSION_DATA["agent_outputs"].get("agent1", "No output"), body_style))
-    story.append(PageBreak())
-    
-    story.append(Paragraph("Agent 2: Attack Surface Mapping", heading_style))
-    story.append(Paragraph(SESSION_DATA["agent_outputs"].get("agent2", "No output"), body_style))
-    story.append(PageBreak())
-    
-    story.append(Paragraph("Agent 3: Detection Engineering", heading_style))
-    story.append(Paragraph(SESSION_DATA["agent_outputs"].get("agent3", "No output"), body_style))
-    
-    doc.build(story)
-    buffer.seek(0)
-    
-    filename = f"Scry_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-    return send_file(buffer, mimetype='application/pdf', as_attachment=True, download_name=filename)
 
 
 if __name__ == "__main__":
