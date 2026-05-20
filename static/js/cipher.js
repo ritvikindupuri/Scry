@@ -520,9 +520,9 @@ class CipherDashboard {
     }
 
     updateObservationsViz(output) {
-        const cpuMatch = output.match(/\|\s*CPU\s*\|\s*(\d+)%?/i) || output.match(/(?:CPU|cpu)[:\s]*(\d+\.?\d*)%/i);
-        const memMatch = output.match(/\|\s*Memory\s*\|\s*(\d+)%?/i) || output.match(/(?:Memory|memory|RAM)[:\s]*(\d+\.?\d*)%/i);
-        const diskMatch = output.match(/\|\s*Disk\s*\|\s*(\d+)%?/i) || output.match(/(?:Disk|disk)[:\s]*(\d+\.?\d*)%/i);
+        const cpuMatch = output.match(/\|\s*CPU\s*\|\s*(\d+\.?\d*)%?/i) || output.match(/(?:CPU|cpu)[:\s]*(\d+\.?\d*)%/i);
+        const memMatch = output.match(/\|\s*Memory\s*\|\s*(\d+\.?\d*)%?/i) || output.match(/(?:Memory|memory|RAM).*?(\d+\.?\d*)%/i);
+        const diskMatch = output.match(/\|\s*Disk\s*\|\s*(\d+\.?\d*)%?/i) || output.match(/(?:Disk|disk).*?(\d+\.?\d*)%/i);
 
         if (cpuMatch) {
             const val = cpuMatch[1];
@@ -543,7 +543,7 @@ class CipherDashboard {
             document.getElementById('metricDisk').textContent = val + '%';
         }
         
-        const netMatch = output.match(/(?:Network|Connections|Listening Ports)[:\s]*(\d+)/i) || output.match(/Listening ports[:\s]*(\d+)/i) || output.match(/Established connections[:\s]*(\d+)/i);
+        const netMatch = output.match(/Established Connections.*?(\d+)/i) || output.match(/Listening Ports.*?(\d+)/i) || output.match(/(?:Network|Connections).*?(\d+)/i);
         if (netMatch) {
             const val = netMatch[1];
             document.getElementById('metricNet').textContent = val;
